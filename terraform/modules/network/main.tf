@@ -1,42 +1,29 @@
-variable "vpc_cidr" {}
-variable "public_subnet_cidr" {}
-variable "private_subnet_cidr" {}
+# modules/network/main.tf
 
-resource "aws_vpc" "main" {
+resource "aws_vpc" "main_vpc" {
   cidr_block = var.vpc_cidr
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "Development VPC"
+  }
 }
 
-resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.public_subnet_cidr
+resource "aws_subnet" "subnet1" {
+  vpc_id = aws_vpc.main_vpc.id
+  cidr_block = "10.0.1.0/24"
+  availability_zone = "us-gov-west-1a"
+
+  tags = {
+    Name = "Subnet One"
+  }
 }
 
-resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.private_subnet_cidr
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main_vpc.id
+
+  tags = {
+    Name = "Main Internet Gateway"
+  }
 }
-
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.main.id
-}
-resource "aws_eip" "nat" {
-  vpc = true
-}
-
-resource "aws_nat_gateway" "nat" {
-  subnet_id     = aws_subnet.public.id
-  allocation_id = aws_eip.nat.id
-
-  depends_on = [aws_internet_gateway.gw]
-}
-
-resource "aws_route" "private_access" {
-  route_table_id         = aws_vpc.main.main_route_table_id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat.id
-}
-
-
-
-
-
