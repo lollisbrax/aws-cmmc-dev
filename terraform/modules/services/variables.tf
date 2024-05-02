@@ -9,3 +9,7 @@ variable "instance_type" {
 variable "subnet_id" {
   description = "Subnet ID where the instance will be launched"
 }
+variable "vpc_id" {
+  description = "The ID of the VPC where services will be deployed"
+  type        = string
+}

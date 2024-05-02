@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-gov-west-1"  # Make sure this matches your deployment region
+  region = "us-west-1"  # Make sure this matches your deployment region
 }
 
 # Create the Transit Gateway

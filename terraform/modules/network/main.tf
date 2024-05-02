@@ -1,5 +1,3 @@
-# modules/network/main.tf
-
 resource "aws_vpc" "main_vpc" {
   cidr_block = var.vpc_cidr
   enable_dns_support = true
@@ -10,13 +8,13 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-resource "aws_subnet" "subnet1" {
-  vpc_id = aws_vpc.main_vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "us-gov-west-1a"
+resource "aws_subnet" "main_subnet" {
+  vpc_id            = aws_vpc.main_vpc.id
+  cidr_block        = var.subnet_cidr
+  availability_zone = var.availability_zone
 
   tags = {
-    Name = "Subnet One"
+    Name = "Main Subnet"
   }
 }
 

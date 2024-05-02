@@ -1,14 +1,12 @@
-# environments/dev/main.tf
-
 provider "aws" {
-  region = "us-gov-west-1" # AWS GovCloud (US) region
+  region = "us-west-1"
 }
 
 module "network" {
-  source          = "../../modules/network"
-  cidr_block      = "10.0.0.0/16"
-  subnet_cidr     = "10.0.1.0/24"
-  availability_zone = "us-gov-west-1a"
+  source            = "../../modules/network"
+  vpc_cidr          = var.vpc_cidr
+  subnet_cidr       = var.subnet_cidr
+  availability_zone = var.availability_zone
 }
 
 module "vpn" {
@@ -19,9 +17,10 @@ module "vpn" {
 
 module "services" {
   source        = "../../modules/services"
-  vpc_id        = module.network.vpc_id
-  ami_id        = "ami-123456"  # Replace with actual AMI
+  ami_id        = "ami-123456"  # Placeholder AMI ID
   instance_type = "t2.micro"
+  subnet_id     = module.network.subnet_id
+  vpc_id        = module.network.vpc_id
 }
 
 module "monitoring" {
