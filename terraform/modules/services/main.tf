@@ -1,11 +1,12 @@
 # Example service: AWS EC2 instance
-resource "aws_instance" "service_instance" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
+resource "aws_instance" "example_instance" {
+  ami           = "ami-0965eacc05e445912"
+  instance_type = "t2.micro"
   subnet_id     = var.subnet_id
+  security_groups = [var.security_group_id]
 
   tags = {
-    Name = "Service Instance"
+    Name = "ExampleInstance"
   }
 }
 resource "aws_vpc" "service_vpc" {

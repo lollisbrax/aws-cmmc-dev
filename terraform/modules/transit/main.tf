@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-1"  # Make sure this matches your deployment region
+  region = "us-west-1"  # This matches your deployment region
 }
 
 # Create the Transit Gateway
@@ -45,13 +45,8 @@ resource "aws_ec2_transit_gateway_route_table" "main_tgw_rt" {
 
 # Transit Gateway Route Table Associations
 resource "aws_ec2_transit_gateway_route_table_association" "inspection_vpc_rt_assoc" {
-  transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.inspection_vpc_attachment.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.main_tgw_rt.id
-}
-
-resource "aws_ec2_transit_gateway_route_table_association" "shared_services_vpc_rt_assoc" {
-  transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.shared_services_vpc_attachment.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.main_tgw_rt.id
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.inspection_vpc_attachment.id
+  transit_gateway_route_table_id = "tgw-rtb-039ceb0595ea087c6"  # Updated to reflect the current AWS configuration
 }
 
 # Optionally, define static routes if needed
