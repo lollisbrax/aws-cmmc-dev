@@ -12,3 +12,6 @@ variable "availability_zone" {
   description = "Availability Zone to use"
   type        = string
 }
+data "aws_availability_zones" "available" {
+  state = "available"
+}

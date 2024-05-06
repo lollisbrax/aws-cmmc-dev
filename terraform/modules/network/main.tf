@@ -11,13 +11,12 @@ resource "aws_vpc" "main_vpc" {
 resource "aws_subnet" "main_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = var.subnet_cidr
-  availability_zone = "us-west-1a"  // Update this line to a valid availability zone
+  availability_zone = data.aws_availability_zones.available.names[0]  // Automatically select the first available AZ
 
   tags = {
     Name = "Main Subnet"
   }
 }
-
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main_vpc.id
 
