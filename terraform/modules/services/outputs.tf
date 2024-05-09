@@ -1,6 +1,7 @@
-output "vpc_id" {
-  value = aws_vpc.service_vpc.id  # Ensure this resource is defined in services/main.tf
+output "vpc_ids" {
+  value = { for k, v in aws_vpc.additional_vpcs : k => v.id }
 }
-output "subnet_id" {
-  value = aws_subnet.service_subnet.id  # Ensure this resource is defined in services/main.tf
+
+output "subnet_ids" {
+  value = { for k, v in aws_subnet.additional_subnets : k => v.id }
 }
