@@ -1,32 +1,32 @@
-resource "aws_vpc" "main_vpc" {
-  cidr_block = var.vpc_cidr
-  enable_dns_support = true
-  enable_dns_hostnames = true
+# aws-cmmc-dev/terraform/modules/organizations/main.tf
 
-  tags = {
-    Name = "Shared-Services-VPC"
-  }
+# Create the Log Archive account in AWS Organizations
+resource "aws_organizations_account" "log_archive" {
+  name      = var.log_archive_account_name  # Name of the Log Archive account
+  email     = var.log_archive_account_email # Email address for the Log Archive account
+  role_name = var.org_role_name             # IAM role name for the new account
 }
 
-resource "aws_subnet" "main_subnet" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = var.subnet_cidr
-  availability_zone = data.aws_availability_zones.available.names[0]  // Automatically select the first available AZ
-
-  tags = {
-    Name = "Main Subnet"
-  }
-}
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main_vpc.id
-
-  tags = {
-    Name = "Main Internet Gateway"
-  }
-}
-variable "create_vpc" {
-  description = "Whether to create a new VPC or use an existing one"
-  type        = bool
-  default     = false
+# Create the Audit account in AWS Organizations
+resource "aws_organizations_account" "audit_account" {
+  name      = var.audit_account_name  # Name of the Audit account
+  email     = var.audit_account_email # Email address for the Audit account
+  role_name = var.org_role_name       # IAM role name for the new account
 }
 
+# Create an Organizational Unit (OU) for logging
+resource "aws_organizations_organizational_unit" "logging" {
+  name      = var.logging_ou_name  # Name of the Logging OU
+  parent_id = aws_organizations_organization.org.roots[0].id  # ID of the root organization
+}
+
+# Create an Organizational Unit (OU) for auditing
+resource "aws_organizations_organizational_unit" "audit" {
+  name      = var.audit_ou_name  # Name of the Audit OU
+  parent_id = aws_organizations_organization.org.roots[0].id  # ID of the root organization
+}
+
+# Ensure that AWS Organizations is set to use all features
+resource "aws_organizations_organization" "org" {
+  feature_set = "ALL"
+}
